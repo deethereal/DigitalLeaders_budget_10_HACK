@@ -24,6 +24,7 @@ interactive = st.container()
 color_label_dict = {'preds': ('r-o', 'по плану'), 'true': ('g-o', 'по факту'), 'our_model': ('b-o', 'наша модель'),
               'our_model2': ('b-o', 'наша модель'), 't_n_and_nn': ('r-o', 'по плану'), 'p_n_and_nn':('g-o', 'по факту')}
 
+
 @st.cache
 def get_data(filename):
     data = {'preds' : [6399038000, 8240000000,11310237000,12208281000,11361323000,10803387000,
@@ -98,7 +99,7 @@ with st.form('graphs'):
             y_columns.append('p_n_and_nn')
         if cb6:
             y_columns.append('our_model2')
-    sumbit_button = st.form_submit_button('Show')
+    sumbit_button = st.form_submit_button('Показать')
     try:
         fig = get_plot(data, x_column, y_columns)
         st.pyplot(fig)
@@ -107,8 +108,9 @@ with st.form('graphs'):
 
 with st.form('predict'):
     st.write('__Загрузите ваш собственный файл!__')
+    st.markdown('Используйте наш [шаблон](ссылка) входных данных для получения проноза')
     uploaded_file = st.file_uploader("Upload a xlsx file", ["xlsx"])
-    file_button = st.form_submit_button('Predict')
+    file_button = st.form_submit_button('Предсказать')
 
 
 
@@ -136,7 +138,7 @@ with st.form('calc'):
 
     year = st.number_input(label="Год", min_value=2010, max_value=2022)
     percent = st.number_input(label= "Ограничение по дефициту бюджета, %",min_value=0., value=15.)
-    calc_button = st.form_submit_button('Calculate')
+    calc_button = st.form_submit_button('Вычислить')
 
 
     if calc_button:
