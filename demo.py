@@ -21,16 +21,16 @@ interactive = st.container()
 #    ''',
 #    unsafe_allow_html=True
 #)
-background_color = '#F5F5F5'
-#model = rm()
+color_dict = {'preds':'r-o', 'true': 'g-o', 'future': 'b-o'}
 
 @st.cache
 def get_data(filename):
     data = {'preds' : [6399038000, 8240000000,11310237000,12208281000,11361323000,10803387000,
-                       12348385000,13074100000, 12857667000,17743400000,21145200000],
+                       12348385000,13074100000, 12857667000,17743400000,21145200000,None,None],
             'true' : [8613483384.46, 11334538970.16,10813732699.53, 8101885886.87,8916328469.16,
-                      9962889434.44, 11518070774.48,11700807336.31,16900358608,17336881098.56,15165765187.88],
-            'years' : range(2010,2021)}
+                      9962889434.44, 11518070774.48,11700807336.31,16900358608,17336881098.56,15165765187.88, None,None],
+            'years' : range(2010,2023),
+            'future': [None,None,None,None,None,None,None,None,None,None,None,1.82699107e+10, 1.88647391e+10]}
     data = pd.DataFrame.from_dict(data)
     return data
 
@@ -40,12 +40,13 @@ def get_model():
     return model
 
 def get_plot(data, x_column, y_columns):
-    fig = plt.figure()
+    fig = plt.figure(figsize=(10,5))
     fig.set_size_inches(8, 6)
-    plt.title('text')
-    plt.plot(data[x_column], data[y_columns])
-    plt.ylabel('label y')
-    plt.xlabel('Time')
+    #plt.title('Доход с налогов на прибыль и доход')
+    for col in y_columns:
+        plt.plot(data[x_column], data[col], color_dict[col])
+    plt.ylabel('Рубли (10^10 ₽)')
+    plt.xlabel('Время')
     plt.legend(y_columns)
     return fig
 
@@ -53,29 +54,28 @@ model = get_model()
 
 with header:
     st.title('Welcome to demo of budget 10 hack!')
-    st.text('In this demo stand you can read the data and see the dependencies.')
+    st.markdown('In this demo stand you can read the data and see the dependencies.')
+
+data = get_data(None)
 
 
-with dataset:
-    st.header('Dataset')
-    data = get_data(None)
-    st.write(data)
-
-with interactive:
-    st.title('Simple graph')
-    c1, plot = st.columns([1, 5])
+with st.form('graphs'):
+    st.markdown('__Доход с налогов на прибыль и доход__')
+    c1, c2, c3, bt = st.columns([1, 1, 1, 5])
     cb1 = c1.checkbox(label='preds')
-    cb2 = c1.checkbox(label='true')
-
+    cb2 = c2.checkbox(label='true')
+    сb3 = c3.checkbox(label='future')
+    sumbit_button = st.form_submit_button('Show')
     y_columns = []
     x_column = ['years']
     if cb1:
         y_columns.append('preds')
     if cb2:
         y_columns.append('true')
+    if сb3:
+        y_columns.append('future')
     try:
         fig = get_plot(data, x_column, y_columns)
-        #st.plotly_chart(fig)
         st.pyplot(fig)
     except :
         st.markdown('Choose variable')
@@ -86,7 +86,7 @@ with st.form('predict'):
     file_button = st.form_submit_button('Predict labels')
     if uploaded_file is not None:
             #df = pd.read_excel(uploaded_file)
-        _, df = t2df(uploaded_file)
+        years, df = t2df(uploaded_file)
 
 
     if file_button:
