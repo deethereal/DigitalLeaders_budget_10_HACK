@@ -68,11 +68,21 @@ with interactive:
         y_columns.append('Value2')
     try:
         fig = get_plot(data, x_column, y_columns)
-        st.plotly_chart(fig)
+        #st.plotly_chart(fig)
         st.pyplot(fig)
     except :
         st.markdown('Choose variable')
 
+with st.form('predict'):
+    st.write('__You can try our model on your own data!__')
+    uploaded_file = st.file_uploader("Upload a xlsx file", ["xlsx"])
+    file_button = st.form_submit_button('Predict labels')
+    if uploaded_file is not None:
+        #file = pd.read_csv(uploaded_file, sep='[;,]', engine='python')
+        st.write('ok')
+
+    if file_button:
+        st.write('predict: ')
 
 
 
