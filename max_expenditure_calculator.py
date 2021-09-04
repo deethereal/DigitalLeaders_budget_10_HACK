@@ -4,12 +4,12 @@ import numpy as np
 PREDS_PATH = 'prediction_at_all.csv'
 
 def print_big_digit(digit_with_e_and_some_other_shit):
-    millions = round(digit_with_e_and_some_other_shit / 1e6, 3)
+    millions = np.round(digit_with_e_and_some_other_shit / 1e6, 3)
 
     millions = str(millions)
     dot_indx = millions.find('.')
     
-    return millions[:dot_indx - 3] + ', ' + millions[dot_indx - 3:]
+    return millions[:dot_indx - 3] + ' ' + millions[dot_indx - 3:]
 
 
 def calculate_max_expendature(year, percent):

@@ -122,14 +122,14 @@ with st.form('calc'):
                 'мы можем вычислить максимально допустимые бюджетные расходы за конкретный год')
 
     year = st.number_input(label="Год", min_value=2010, max_value=2022)
-    percent = st.number_input(label= "Процент",min_value=0.)
+    percent = st.number_input(label= "Ограничение по дефициту бюджета, %",min_value=0., value=15.)
     calc_button = st.form_submit_button('Calculate')
 
 
     if calc_button:
         res = calculate_max_expendature(year, percent)
-        st.markdown(str(res['actual'][0]) + ' - прогнозируемый доход' )
-        st.markdown(str(res['plus_percent'][0]) + ' - максимальный прогнозируемый расход, с учетом дефицита')
+        #st.markdown(res['actual'][1:-1] + ' - прогнозируемый доход' )
+        st.markdown(res['plus_percent'][1:-1] + ' млн руб. - максимальный прогнозируемый расход с учетом дефицита')
 
 
 
