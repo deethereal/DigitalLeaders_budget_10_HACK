@@ -42,9 +42,10 @@ def get_data(filename):
     return data
 
 @st.cache
-def get_model():
+def get_models():
     model = joblib.load('model.pkl')
-    return model
+    tant_model = joblib.load('tant_model.pkl')
+    return model, tant_model
 
 def get_plot(data, x_column, y_columns):
     fig = plt.figure(figsize=(10,5))
@@ -57,11 +58,11 @@ def get_plot(data, x_column, y_columns):
     plt.legend(y_columns)
     return fig
 
-model = get_model()
+model, tant_model = get_models()
 
 with header:
-    st.title('Welcome to demo of budget 10 hack!')
-    st.markdown('In this demo stand you can read the data and see the dependencies.')
+    st.title('Демо стенд команды 2πk')
+    st.markdown('В данном демо вы можете ознакомиться с текущими данными доходов, предсказанными по СЭР.')
 
 data = get_data(None)
 
@@ -101,20 +102,31 @@ with st.form('graphs'):
         fig = get_plot(data, x_column, y_columns)
         st.pyplot(fig)
     except :
-        st.markdown('Choose variable')
+        st.markdown('Выберите данные')
 
 with st.form('predict'):
-    st.write('__You can try our model on your own data!__')
+    st.write('__Загрузите ваш собственный файл!__')
     uploaded_file = st.file_uploader("Upload a xlsx file", ["xlsx"])
-    file_button = st.form_submit_button('Predict labels')
-    if uploaded_file is not None:
-            #df = pd.read_excel(uploaded_file)
-        years, df = t2df(uploaded_file)
+    file_button = st.form_submit_button('Predict')
+
 
 
     if file_button:
-        pred = model.predict(df)
-        st.write('predict: ', pred)
+        try:
+            if uploaded_file is not None:
+                # df = pd.read_excel(uploaded_file)
+                years, df = t2df(uploaded_file)
+            model_pred = model.predict(df)
+            tant_model_pred = tant_model.predict(df)
+            st.write('Налог на прибыль и доход: ')
+            res_1 = pd.DataFrame(index=years, data = model_pred, columns=['Результат'])
+            st.write(res_1)
+            st.write('Налоговый и неналоговый доходы: ')
+            res_2 = pd.DataFrame(index=years, data=tant_model_pred, columns=['Результат'])
+            st.write(res_2)
+        except:
+            st.markdown("Произошла ошибка, попробуйте другие данные")
+
 
 with st.form('calc'):
     st.markdown('__Расчет расходов бюджета__')
