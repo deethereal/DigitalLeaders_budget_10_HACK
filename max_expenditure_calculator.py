@@ -11,5 +11,5 @@ def calculate_max_expendature(year, percent):
         print(f'File Not found: {PREDS_PATH}')
         
     res = df.loc[df['year'] == year, 'value'].values
-    print(res)
+    #print(res)
     return {'actual': res, 'plus_percent': (1 + percent / 100) * res}
