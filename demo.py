@@ -5,7 +5,7 @@ import joblib
 from template2df import template2df as t2df
 from datetime import date
 
-#from model import RegressionModel as rm
+from max_expenditure_calculator import calculate_max_expendature
 
 header = st.container()
 dataset = st.container()
@@ -104,7 +104,7 @@ with st.form('calc'):
 
 
     if calc_button:
-        res = '1'
+        res = calculate_max_expendature(year.year, percent)
         st.write(res)
 
 
