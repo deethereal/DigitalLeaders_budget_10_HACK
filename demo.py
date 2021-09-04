@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import joblib
 from template2df import template2df as t2df
-
+from datetime import date
 
 #from model import RegressionModel as rm
 
@@ -62,7 +62,7 @@ data = get_data(None)
 with st.form('graphs'):
     st.markdown('__Доход с налогов на прибыль и доход__')
     c1, c2, c3, bt = st.columns([1, 1, 1, 5])
-    cb1 = c1.checkbox(label='preds')
+    cb1 = c1.checkbox(label='preds', value = True)
     cb2 = c2.checkbox(label='true')
     сb3 = c3.checkbox(label='future')
     sumbit_button = st.form_submit_button('Show')
@@ -93,12 +93,19 @@ with st.form('predict'):
         pred = model.predict(df)
         st.write('predict: ', pred)
 
-        #try:
-        #    st.write(df)
-        #    pred = model.predict(df)
-        #    st.write('predict: ', pred)
-        #except:
-        #    st.markdown('__Fail to predict__')
+with st.form('calc'):
+    st.markdown('__Расчет расходов бюджета__')
+    st.markdown('Исходя из планируемого бюджета доходов, и максимально допустимого дефицита бюджета '
+                'мы можем вычислить максимально допустимые бюджетные расходы за конкретный год')
+
+    year = st.date_input(label="Год", min_value=date(2000, 1, 1), max_value=date(2023, 1, 1))
+    percent = st.number_input(label= "Процент",min_value=0.)
+    calc_button = st.form_submit_button('Calculate')
+
+
+    if calc_button:
+        res = '1'
+        st.write(res)
 
 
 
