@@ -2,12 +2,11 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import random
-import numpy
-import plotly.express as px
-import plotly.graph_objects as go
-import altair as alt
+import joblib
 
-from model import RegressionModel as rm
+
+
+#from model import RegressionModel as rm
 
 header = st.container()
 dataset = st.container()
@@ -24,13 +23,22 @@ st.markdown(
     unsafe_allow_html=True
 )
 background_color = '#F5F5F5'
-model = rm()
+#model = rm()
 
 @st.cache
 def get_data(filename):
-    data = [(random.randint(0, 100), hash(str(i))%100 , i+2010) for i in range(10)]
-    data = pd.DataFrame(data= data, columns= ['Value1', 'Value2', 'Year'])
+    data = {'preds' : [6399038000, 8240000000,11310237000,12208281000,11361323000,10803387000,
+                       12348385000,13074100000, 12857667000,17743400000,21145200000],
+            'true' : [8613483384.46, 11334538970.16,10813732699.53, 8101885886.87,8916328469.16,
+                      9962889434.44, 11518070774.48,11700807336.31,16900358608,17336881098.56,15165765187.88],
+            'years' : range(2010,2021)}
+    data = pd.DataFrame.from_dict(data)
     return data
+
+@st.cache
+def get_model():
+    model = joblib.load('model.pkl')
+    return model
 
 def get_plot(data, x_column, y_columns):
     fig = plt.figure()
@@ -42,7 +50,7 @@ def get_plot(data, x_column, y_columns):
     plt.legend(y_columns)
     return fig
 
-
+model = get_model()
 
 with header:
     st.title('Welcome to demo of budget 10 hack!')
@@ -57,15 +65,15 @@ with dataset:
 with interactive:
     st.title('Simple graph')
     c1, plot = st.columns([1, 5])
-    cb1 = c1.checkbox(label='Value1')
-    cb2 = c1.checkbox(label='Value2')
+    cb1 = c1.checkbox(label='preds')
+    cb2 = c1.checkbox(label='true')
 
     y_columns = []
-    x_column = ['Year']
+    x_column = ['years']
     if cb1:
-        y_columns.append('Value1')
+        y_columns.append('preds')
     if cb2:
-        y_columns.append('Value2')
+        y_columns.append('true')
     try:
         fig = get_plot(data, x_column, y_columns)
         #st.plotly_chart(fig)
@@ -79,10 +87,13 @@ with st.form('predict'):
     file_button = st.form_submit_button('Predict labels')
     if uploaded_file is not None:
         #file = pd.read_csv(uploaded_file, sep='[;,]', engine='python')
-        st.write('ok')
+        pass
 
     if file_button:
-        st.write('predict: ')
+        try:
+            st.write('predict: ')
+        except:
+            st.markdown('__Fail to predict__')
 
 
 
