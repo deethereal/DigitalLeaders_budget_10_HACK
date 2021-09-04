@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import joblib
-
+from template2df import template2df as t2df
 
 
 #from model import RegressionModel as rm
@@ -11,16 +11,16 @@ header = st.container()
 dataset = st.container()
 interactive = st.container()
 
-st.markdown(
-    '''
-    <style>
-    .main {
-    background-color: #F5F5F5;
-    }
-    </style>
-    ''',
-    unsafe_allow_html=True
-)
+#st.markdown(
+#    '''
+#    <style>
+#    .main {
+#    background-color: #F5F5F5;
+#    }
+#    </style>
+#    ''',
+#    unsafe_allow_html=True
+#)
 background_color = '#F5F5F5'
 #model = rm()
 
@@ -85,14 +85,20 @@ with st.form('predict'):
     uploaded_file = st.file_uploader("Upload a xlsx file", ["xlsx"])
     file_button = st.form_submit_button('Predict labels')
     if uploaded_file is not None:
-        #file = pd.read_csv(uploaded_file, sep='[;,]', engine='python')
-        pass
+            #df = pd.read_excel(uploaded_file)
+        _, df = t2df(uploaded_file)
+
 
     if file_button:
-        try:
-            st.write('predict: ')
-        except:
-            st.markdown('__Fail to predict__')
+        pred = model.predict(df)
+        st.write('predict: ', pred)
+
+        #try:
+        #    st.write(df)
+        #    pred = model.predict(df)
+        #    st.write('predict: ', pred)
+        #except:
+        #    st.markdown('__Fail to predict__')
 
 
 
