@@ -21,8 +21,8 @@ interactive = st.container()
 #    ''',
 #    unsafe_allow_html=True
 #)
-color_dict = {'preds':'r-o', 'true': 'g-o', 'our model': 'b-o',
-              'our model 2': '-o', 't_n_and_nn': '-o', 'p_n_and_nn':'-o'}
+color_label_dict = {'preds': ('r-o', 'по плану'), 'true': ('g-o', 'по факту'), 'our_model': ('b-o', 'наша модель'),
+              'our_model2': ('b-o', 'наша модель'), 't_n_and_nn': ('r-o', 'по плану'), 'p_n_and_nn':('g-o', 'по факту')}
 
 @st.cache
 def get_data(filename):
@@ -31,8 +31,8 @@ def get_data(filename):
             'true' : [8613483384.46, 11334538970.16,10813732699.53, 8101885886.87,8916328469.16,
                       9962889434.44, 11518070774.48,11700807336.31,16900358608,17336881098.56,15165765187.88, None,None],
             'years' : range(2010,2023),
-            'our model': [None,None,None,None,None,None,None,None,None,1.76669370e+10, 1.83427747e+10,1.82699107e+10,1.88647391e+10],
-            'our model 2': [None,None,None,None,None,None,None,None,None,2.63422423e+10, 2.70974103e+10,2.71566655e+10, 2.79458983e+10],
+            'our_model': [None,None,None,None,None,None,None,None,None,1.76669370e+10, 1.83427747e+10,1.82699107e+10,1.88647391e+10],
+            'our_model2': [None,None,None,None,None,None,None,None,None,2.63422423e+10, 2.70974103e+10,2.71566655e+10, 2.79458983e+10],
             't_n_and_nn' : [15322132232.73, 18202689345.18, 17570424288.03, 15173763025.93, 15956764902, 17808163620.08,
                           19654412574.42, 20129196349.22, 26604349315.43, 27763981934.92, 27131141282.57, None, None],
             'p_n_and_nn' : [13231012000.00, 15240527000, 17322409000, 19883469000, 18466755000,
@@ -52,17 +52,18 @@ def get_plot(data, x_column, y_columns):
     fig.set_size_inches(8, 6)
     #plt.title('Доход с налогов на прибыль и доход')
     for col in y_columns:
-        plt.plot(data[x_column], data[col], color_dict[col])
+        #print(color_label_dict[col][1])
+        plt.plot(data[x_column], data[col], color_label_dict[col][0], label= color_label_dict[col][1])
     plt.ylabel('Рубли (10^10 ₽)')
     plt.xlabel('Время')
-    plt.legend(y_columns)
+    plt.legend(loc='best')
     return fig
 
 model, tant_model = get_models()
 
 with header:
     st.title('Демо стенд команды 2πk')
-    st.markdown('В данном демо вы можете ознакомиться с текущими данными доходов, предсказанными по СЭР.')
+    st.markdown('В данном демо вы можете ознакомиться с текущими данными доходов, предсказанными по данным социально-экономического развития.')
 
 data = get_data(None)
 
@@ -78,25 +79,25 @@ with st.form('graphs'):
         c1, c2, c3 = st.columns([1, 1, 1])
         cb1 = c1.checkbox(label='preds', value=True)
         cb2 = c2.checkbox(label='true', value=True)
-        сb3 = c3.checkbox(label='our model', value=True)
+        сb3 = c3.checkbox(label='our_model', value=True)
         if cb1:
             y_columns.append('preds')
         if cb2:
             y_columns.append('true')
         if сb3:
-            y_columns.append('our model')
+            y_columns.append('our_model')
     else:
         st.markdown('__Налоговый и неналоговый доходы__')
         c4, c5, c6 = st.columns([1, 1, 1])
         cb4 = c4.checkbox(label='t_n_and_nn', value = True)
         cb5 = c5.checkbox(label='p_n_and_nn', value=True)
-        cb6 = c6.checkbox(label='our model', value=True)
+        cb6 = c6.checkbox(label='our_model2', value=True)
         if cb4:
             y_columns.append('t_n_and_nn')
         if cb5:
             y_columns.append('p_n_and_nn')
         if cb6:
-            y_columns.append('our model 2')
+            y_columns.append('our_model2')
     sumbit_button = st.form_submit_button('Show')
     try:
         fig = get_plot(data, x_column, y_columns)
