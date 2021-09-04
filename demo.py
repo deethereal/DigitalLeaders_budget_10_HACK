@@ -77,9 +77,9 @@ with st.form('graphs'):
     if mod == "Налог на прибыль и доход":
         st.markdown('__Доход с налогов на прибыль и доход__')
         c1, c2, c3 = st.columns([1, 1, 1])
-        cb1 = c1.checkbox(label='preds', value=True)
-        cb2 = c2.checkbox(label='true', value=True)
-        сb3 = c3.checkbox(label='our_model', value=True)
+        cb1 = c1.checkbox(label='по плану', value=True)
+        cb2 = c2.checkbox(label='по факту', value=True)
+        сb3 = c3.checkbox(label='наша модель', value=True)
         if cb1:
             y_columns.append('preds')
         if cb2:
@@ -89,9 +89,9 @@ with st.form('graphs'):
     else:
         st.markdown('__Налоговый и неналоговый доходы__')
         c4, c5, c6 = st.columns([1, 1, 1])
-        cb4 = c4.checkbox(label='t_n_and_nn', value = True)
-        cb5 = c5.checkbox(label='p_n_and_nn', value=True)
-        cb6 = c6.checkbox(label='our_model2', value=True)
+        cb4 = c4.checkbox(label='по плану', value = True)
+        cb5 = c5.checkbox(label='по факту', value=True)
+        cb6 = c6.checkbox(label='наша модель', value=True)
         if cb4:
             y_columns.append('t_n_and_nn')
         if cb5:
