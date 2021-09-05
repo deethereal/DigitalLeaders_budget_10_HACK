@@ -3,27 +3,23 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import joblib
 from template2df import template2df as t2df
-
+import base64, os
 
 from max_expenditure_calculator import calculate_max_expendature
 
 header = st.container()
-dataset = st.container()
+#dataset = st.container()
 interactive = st.container()
 
-#st.markdown(
-#    '''
-#    <style>
-#    .main {
-#    background-color: #F5F5F5;
-#    }
-#    </style>
-#    ''',
-#    unsafe_allow_html=True
-#)
 color_label_dict = {'preds': ('r-o', 'по плану'), 'true': ('g-o', 'по факту'), 'our_model': ('b-o', 'наша модель'),
               'our_model2': ('b-o', 'наша модель'), 't_n_and_nn': ('r-o', 'по плану'), 'p_n_and_nn':('g-o', 'по факту')}
 
+def get_binary_file_downloader_html(bin_file = 'template.xlsx', file_label='File'):
+    with open(bin_file, 'rb') as f:
+        data = f.read()
+    bin_str = base64.b64encode(data).decode()
+    href = f'<a href="data:application/octet-stream;base64,{bin_str}" download="{os.path.basename(bin_file)}">шаблон</a>'
+    return href
 
 @st.cache
 def get_data(filename):
@@ -108,7 +104,7 @@ with st.form('graphs'):
 
 with st.form('predict'):
     st.write('__Загрузите ваш собственный файл!__')
-    st.markdown('Используйте наш [шаблон](ссылка) входных данных для получения проноза')
+    st.markdown(f'Используйте наш {get_binary_file_downloader_html()} входных данных для получения прогноза', unsafe_allow_html=True)
     uploaded_file = st.file_uploader("Upload a xlsx file", ["xlsx"])
     file_button = st.form_submit_button('Предсказать')
 
